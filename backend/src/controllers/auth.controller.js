@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcrypt";
 import cloudinary from "../lib/cloudinary.js";
-import { userValidationSchema } from "../../validation/validation.user.js";
+import { userValidationSchema } from "../validation/validation.user.js";
 import User from "../models/user.model.js";
 import { generateToken } from "../lib/utils.js";
 
