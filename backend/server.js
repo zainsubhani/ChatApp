@@ -9,6 +9,7 @@ dotenv.config(); // load .env variables
 const app = express();
 const PORT = process.env.PORT || 3000; // fallback if .env is missing
 app.use(cors());
+app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.listen(PORT, () => {

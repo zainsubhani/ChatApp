@@ -21,4 +21,7 @@ export const userValidationSchema = Joi.object({
     "any.only": "Passwords do not match",
     "any.required": "Confirm password is required",
   }),
+  profilePic: Joi.string().uri().optional().messages({
+    "string.uri": "Profile picture must be a valid URL",
+  }),
 });
