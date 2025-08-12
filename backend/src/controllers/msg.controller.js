@@ -61,12 +61,21 @@ export const sendMessage = async (req, res) => {
     }
     const newMessage = new Message({
       senderId,
-      receiverId,
+      receiverid,
       text,
       image: imageUrl,
     });
     await newMessage.save();
 
     // realtime communication socket.io goes here
-  } catch (error) {}
+
+    res.status(StatusCodes.ACCEPTED).json({
+      message: "send successfully",
+    });
+  } catch (error) {
+    console.log("error in message controller", error.messages);
+    res
+      .status(StatusCodes.BAD_GATEWAY)
+      .json({ message: "Internal Server Error" });
+  }
 };
