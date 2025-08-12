@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcrypt";
-
+import cloudinary from "../lib/cloudinary.js";
 import { userValidationSchema } from "../../validation/validation.user.js";
 import User from "../models/user.model.js";
 import { generateToken } from "../lib/utils.js";
@@ -96,5 +96,34 @@ export const logout = (req, res) => {
 };
 
 export const updateProfile = async (req, res) => {
-  res.json({ message: "profile " });
+  try {
+    const { profilePic } = req.body;
+    const userId = req.user._id;
+    if (!profilePic)
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Profile Pic required", success: false });
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: uploadResponse.secure_url },
+      { new: true }
+    );
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Updated successfully", success: true });
+  } catch (error) {
+    console.log(uploadResult);
+  }
+};
+
+export const checkAuth = async (req, res) => {
+  try {
+    res.status(StatusCodes.ACCEPTED).json(req.user);
+  } catch (error) {
+    console.log("Error in auth controller", error.message);
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ messsage: "Error", success: false });
+  }
 };
