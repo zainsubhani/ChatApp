@@ -52,13 +52,49 @@ export const signup = async (req, res) => {
   }
 };
 
-export const signin = (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    res.status(StatusCodes.LENGTH_REQUIRED);
-  } else {
+export const signin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const userExit = await User.findOne({ email });
+    if (!userExit)
+      return res
+        .status(StatusCodes.BAD_GATEWAY)
+        .json({ message: "Invalid credential", success: false });
+    const isPasswordCorrect = await bcrypt.compare(password, userExit.password);
+    if (!isPasswordCorrect)
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Invalid Password", success: false });
+    generateToken(userExit._id, res);
+    res.status(StatusCodes.ACCEPTED).json({
+      _id: userExit._id,
+      fullName: userExit.fullName,
+      email: userExit.email,
+      profilePic: userExit.profilePic,
+      message: "Login Successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.log("Error in login", error.message);
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Interval Error", success: false });
   }
 };
 export const logout = (req, res) => {
-  res.send("logout");
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res
+      .status(StatusCodes.ACCEPTED)
+      .json({ message: "Logout Sucessfully", success: false });
+  } catch (error) {
+    console.log("Error in login", error.message);
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Interval Error", success: false });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  res.json({ message: "profile " });
 };
