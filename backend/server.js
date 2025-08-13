@@ -10,7 +10,12 @@ dotenv.config(); // load .env variables
 
 const app = express();
 const PORT = process.env.PORT || 3000; // fallback if .env is missing
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your frontend URL
+    credentials: true, // allow credentials (cookies, auth headers)
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
