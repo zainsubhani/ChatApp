@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function Signup() {
+export default function SignUpPage() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
